@@ -21,7 +21,9 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+
+     //Cambiato da '/home' per rendere default la route da admin
+    public const HOME = '/admin';
 
     /**
      * Define your route model bindings, pattern filters, etc.
