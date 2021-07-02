@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -28,7 +29,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.posts.create');
     }
 
     /**
@@ -39,7 +40,41 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            //'category_id' => "nullable|exists:categories,id"
+        ]);
+
+        $newPostData = $request->all();
+        $newPost = new Post();
+        $newPost->fill($newPostData);
+
+        //Non lascio sia generato dal metodo fill così da impedire injections da parte di terzi
+        $newPost->user_id = $request->user()->id;
+
+        //Generazione slug
+        $slug = Str::slug($newPost->title);
+        $slug_url = $slug;
+
+        //Verifico lo slug non esista già in DB
+        $post_exists = Post::where('slug', $slug)->first();
+        $counter = 1;
+
+        //faccio un ciclo per verificare la presenza di post con $slug uguale
+        while ($post_exists) {
+            $slug = $slug_url . '-' . $counter;
+            $counter++;
+            //ripeto la variabile perché adesso ho anche il contatore, oltre allo slug
+            $post_exists = Post::where('slug', $slug)->first();
+        }
+
+        //Assugno il valore alla mia tabella
+        $newPost->slug = $slug;
+
+        $newPost->save();
+
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -59,9 +94,14 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        /*$data = [
+            'post' => $post
+        ];
+
+        return view('admin.posts.edit', $data);*/
+        return view('admin.posts.edit', compact('post'));
     }
 
     /**
@@ -71,9 +111,41 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            //'category_id' => "nullable|exists:categories,id"
+        ]);
+        
+        $form_data = $request->all();
+
+        // verifico se il titolo ricevuto dal form è diverso dal vecchio titolo
+        if ($form_data['title'] != $post->title) {
+            //se il titolo è stato modificato dovrò fare altrettando con lo slug v.store()
+            $slug = Str::slug($form_data['title']);
+            $slug_url = $slug;
+
+            //Verifico lo slug non esista già in DB
+            $post_exists = Post::where('slug', $slug)->first();
+            $counter = 1;
+
+            //faccio un ciclo per verificare la presenza di post con $slug uguale
+            while ($post_exists) {
+                $slug = $slug_url . '-' . $counter;
+                $counter++;
+                //ripeto la variabile perché adesso ho anche il contatore, oltre allo slug
+                $post_exists = Post::where('slug', $slug)->first();
+            }
+
+            //Assugno il valore alla mia tabella
+            $form_data['slug'] = $slug;
+
+        }
+        
+        $post->update($form_data);
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -82,8 +154,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return redirect()->route('admin.posts.index');
     }
 }
