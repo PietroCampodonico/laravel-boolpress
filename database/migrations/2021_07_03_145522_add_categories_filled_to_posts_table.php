@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyToPostsTable extends Migration
+class AddCategoriesFilledToPostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,12 @@ class AddForeignKeyToPostsTable extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
-            //Ci vuole user_id nei fillable
-            
-            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger('category_id')->nullable();
 
-            $table->foreign("user_id")
+            $table->foreign('category_id')
                 ->references('id')
-                ->on("users");
-
+                ->on('categories')
+                ->onDelete('set null');
         });
     }
 
@@ -33,8 +31,8 @@ class AddForeignKeyToPostsTable extends Migration
     public function down()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->dropForeign('posts_user_id_foreign');
-            $table->dropColumn('user_id');
+            $table->dropForeign('posts_category_id_foreign');
+            $table->dropColumn('category_id');
         });
     }
 }

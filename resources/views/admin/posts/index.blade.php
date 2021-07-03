@@ -10,8 +10,8 @@
             <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Slug</th>
                 <th>Category</th>
+                <th>Slug</th>
                 <th>User</th>
             </tr>
         </thead>
@@ -22,8 +22,8 @@
                 <td>{{ $post->id }}</td>
                 <td>{{ $post->title }}</td>
                 <td>{{ $post->slug }}</td>
-                {{-- <td>{{ $post->category ? $post->category->name : '-' }}</td>
-                <td>{{ $post->user->name }}</td> --}}
+                <td>{{ $post->category ? $post->category->name : '-' }}</td>
+                <td>{{ $post->user->name }}</td> 
 
                 <td><a href="{{ route('admin.posts.show', ['post' =>$post->id]) }}">Details...</a></td>
                 <td><a href="{{ route('admin.posts.edit', ['post' =>$post->id]) }}">Edit...</a></td>

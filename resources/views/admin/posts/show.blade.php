@@ -10,13 +10,12 @@
     <li>TITLE: {{ $post->title }}</li>
     <li>SLUG: {{ $post->slug }}</li>
     <li>CONTENT: {{ $post->content }}</li>
-    {{-- <li>CATEGORY: {{ $post->category ? $post->category->name : '-' }}</li>
-    <li>USER: {{ $post->user->name }} ({{ $post->user->email }}</li> --}}
+    {{-- <li>CATEGORY: {{ $post->category ? $post->category->name : '-' }}</li>--}}
+    <li>USER: {{ $post->user->name }} ({{ $post->user->email }})</li> 
 
     <li><small>CREATION DATE: {{ $post->created_at }}</small></li>
     <li><small>LAST UPDATE: {{ $post->updated_at }}</small></li>
 
-    <li><a href="{{ route('admin.posts.show', ['post' =>$post->id]) }}">Details...</a></li>
     <li><a href="{{ route('admin.posts.edit', ['post' =>$post->id]) }}">Edit...</a></li>
     <li>
         <form action="{{ route('admin.posts.destroy', ['post' =>$post->id]) }}" method="post">
