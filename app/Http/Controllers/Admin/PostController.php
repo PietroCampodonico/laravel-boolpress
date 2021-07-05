@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Category;
 use App\Post;
 use App\Http\Controllers\Controller;
+use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -101,10 +102,12 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
         $data = [
             'post' => $post,
             'categories' => $categories,
+            'tags'=> $tags
         ];
 
         return view('admin.posts.edit', $data);
@@ -122,7 +125,8 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category_id' => "nullable|exists:categories,id"
+            'category_id' => "nullable|exists:categories,id",
+            'tags' => "exists:tags,id"
         ]);
         
         $form_data = $request->all();
@@ -149,6 +153,15 @@ class PostController extends Controller
             $form_data['slug'] = $slug;
 
         }
+
+        if (!key_exists("tags", $form_data)) {
+            $form_data["tags"] = [];
+        }
+
+        //$post->tags()->detach();
+        //$post->tags()->attach($form_data["tags"]);
+
+        $post->tags()->sync($form_data["tags"]);
         
         $post->update($form_data);
         return redirect()->route('admin.posts.index');
