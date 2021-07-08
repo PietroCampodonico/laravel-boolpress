@@ -13,6 +13,9 @@
                 <th>Category</th>
                 <th>Slug</th>
                 <th>User</th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
 
