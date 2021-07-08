@@ -7,6 +7,7 @@ use App\Post;
 use App\Http\Controllers\Controller;
 use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -75,6 +76,12 @@ class PostController extends Controller
 
         //Assugno il valore alla mia tabella
         $newPost->slug = $slug;
+
+        if (key_exists("postCover", $newPostData)) {
+            $storageResult = Storage::put("postCovers", $newPostData["postCover"]);
+
+            $newPost->cover_url = $storageResult;
+        }
 
         $newPost->save();
 
@@ -162,6 +169,18 @@ class PostController extends Controller
         //$post->tags()->attach($form_data["tags"]);
 
         $post->tags()->sync($form_data["tags"]);
+        
+        if (key_exists("postCover", $form_data)) {
+            if ($post->cover_url) {
+                Storage::delete($post->cover_url);
+            }
+
+            //mi crea lui la cartella(primo argomento)
+            $storageResult = Storage::put("postCovers", $form_data["postCover"]);
+            //la funzione storage mi crea l'url dell'img, compreso di cartella in cui è contenuta, io poi lo associo al campo creato
+            //nella migration, ossia ...[cover_url]
+            $form_data["cover_url"] = $storageResult;
+        }
         
         $post->update($form_data);
         return redirect()->route('admin.posts.index');

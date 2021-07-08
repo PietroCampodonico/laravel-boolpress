@@ -6,6 +6,11 @@
 
 <a href="{{ route('admin.posts.index') }}">Go Back to the Posts List</a>
 
+ @if($post->cover_url)
+ <img src="{{ asset('storage/' . $post->cover_url) }}">
+ @endif
+
+
 <ul>
     <li>TITLE: {{ $post->title }}</li>
     <li>SLUG: {{ $post->slug }}</li>

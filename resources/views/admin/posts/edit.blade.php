@@ -18,10 +18,19 @@
     @endif
 </div>
 
-<form action="{{ route('admin.posts.update', ['post' => $post->id]) }}" method="post">
+@if($post->cover_url)
+<img src="{{asset('storage/' . $post->cover_url)}}" alt="">
+@endif
+    
+<form action="{{ route('admin.posts.update', ['post' => $post->id]) }}" method="post" enctype="multipart/form-data">
 
 @csrf
 @method('PATCH')
+
+    <div class="form-group">
+        <label>Cover IMG</label>
+        <input type="file" name="postCover" accept=".jpg,.png" class="form-control-file">
+    </div>
 
     <div class="form-group">
         <label>Titolo</label>

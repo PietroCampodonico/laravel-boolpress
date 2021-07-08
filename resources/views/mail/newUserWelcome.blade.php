@@ -1,0 +1,2 @@
+<p>Gentile {{ $user->name }},
+Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti ratione unde inventore in aliquid consequatur qui. Autem deleniti voluptatem ratione similique facilis dignissimos minima, sint tempora suscipit aspernatur. Nobis, iste?</p>

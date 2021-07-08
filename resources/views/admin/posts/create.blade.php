@@ -14,8 +14,16 @@
     </div>
 
 
-    <form action="{{ route('admin.posts.store') }}" method="post">
+    <form action="{{ route('admin.posts.store') }}" method="post" enctype="multipart/form-data">
+
     @csrf
+
+        <div class="form-group">
+            <label>Cover img</label>
+            <input type="file" name="postCover" accept=".jpg,.png" class="form-control-file">
+        </div>
+
+
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" placeholder="Insert title" value="{{ old('title') }}" required>
